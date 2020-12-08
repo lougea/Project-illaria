@@ -17,27 +17,7 @@ export default {
   css: [],
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
-  plugins: [],
-
-  // modules: ['@nuxtjs/firebase'],
-
-  // firebase: {
-  //   config: {
-  //     apiKey: '<apiKey>',
-  //     authDomain: '<authDomain>',
-  //     databaseURL: '<databaseURL>',
-  //     projectId: '<projectId>',
-  //     storageBucket: '<storageBucket>',
-  //     messagingSenderId: '<messagingSenderId>',
-  //     appId: '<appId>',
-  //     measurementId: '<measurementId>',
-  //   },
-  //   services: {
-  //     auth: true,
-  //     firestore: true,
-  //     storage: true,
-  //   },
-  // },
+  plugins: ['~/plugins/firebase.js'],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
   components: true,

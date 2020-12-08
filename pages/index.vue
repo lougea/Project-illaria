@@ -5,7 +5,5 @@
 </template>
 
 <script>
-export default {
-  mounted() {},
-}
+// gs://illariaproject-ac19c.appspot.com/forest.jpg
 </script>

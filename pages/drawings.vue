@@ -1,39 +1,44 @@
 <template>
   <div class="h-screen flex flex-col">
-    <div class="p-6 m-4 grid grid-cols-3 gap-4">
-      <div
-        v-for="project in projects"
-        :key="project.id"
-        class="text-center relative"
-        @click="showModal(project.id)"
-      >
-        <img
-          :src="`${project.cover}`"
-          alt=""
-          class="object-cover w-full h-full border z-10"
-        />
-
-        <div class="absolute inset-0 z-30 opacity-0 hover:opacity-100">
-          <p class="text-3xl">
-            {{ project.name }}
-          </p>
+    <div v-if="modal" class="z-40 h-full flex" @click="modal = false">
+      <div class="opacity-100 m-auto">
+        <div
+          :class="`m-auto grid gap-2 grid-cols-${
+            projects[index - 1].srcs.length === 1 ? 1 : 2
+          } p-6`"
+        >
+          <div
+            v-for="(src, index) in projectModal.srcs"
+            :key="index"
+            class="h-auto m-auto"
+            :class="{
+              'w-2/5': projectModal.srcs.length === 1,
+              'w-4/5': projectModal.srcs.length !== 1,
+            }"
+          >
+            <img :src="src" class="object-cover w-full h-full border z-20" />
+          </div>
         </div>
       </div>
     </div>
-    <div
-      v-if="modal"
-      class="absolute inset-0 opacity-75 bg-gray-200 z-40 overflow-hidden"
-      @click="modal = false"
-    >
-      <div class="m-auto opacity-100">
-        <div v-for="project in projects" :key="project.id">
-          <div v-for="url in project.urls" :key="url.id">
-            <img
-              :src="url"
-              alt=""
-              class="object-cover w-full h-full border z-60"
-            />
-          </div>
+    <div v-else class="p-6 m-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div
+        v-for="project in projects"
+        :key="project.id"
+        height="500px"
+        class="text-center relative bg-grey-100"
+        @click="showModal(project.id)"
+      >
+        <img
+          :src="project.srcs[0]"
+          alt=""
+          class="object-cover h-full w-full border z-50"
+        />
+
+        <div class="absolute inset-0 z-30 opacity-0 hover:opacity-100 flex">
+          <p class="text-4xl m-auto text-black bg-white p-2">
+            {{ project.name }}
+          </p>
         </div>
       </div>
     </div>
@@ -41,68 +46,111 @@
 </template>
 
 <script>
+import { storage } from '~/plugins/firebase.js'
 export default {
   data() {
     return {
       modal: false,
-      projects: {
-        project1: {
+      index: 0,
+      projects: [
+        {
           id: 1,
-          name: 'Project 1',
-          cover: 'pint.jpg',
-          urls: ['assets/drawings/animals/1.jpg'],
+          name: 'Animals',
+          cover: 'assets/draw/animals/1.jpg',
+          urls: [
+            'assets/draw/animals/1.jpg',
+            'assets/draw/animals/2.jpg',
+            'assets/draw/animals/3.jpg',
+            'assets/draw/animals/4.jpg',
+          ],
+          srcs: [],
         },
-        project2: {
+        {
           id: 2,
-          name: 'Project 2',
-          cover: 'pint.jpg',
+          name: 'Carnet',
+          cover: 'assets/draw/carnet/1.jpg',
+          urls: [
+            'assets/draw/carnet/1.jpg',
+            'assets/draw/carnet/2.jpg',
+            'assets/draw/carnet/3.jpg',
+            'assets/draw/carnet/4.jpg',
+            'assets/draw/carnet/5.jpg',
+            'assets/draw/carnet/6.jpg',
+            'assets/draw/carnet/7.JPEG',
+            'assets/draw/carnet/8.jpg',
+            'assets/draw/carnet/9.jpg',
+            'assets/draw/carnet/10.jpg',
+            'assets/draw/carnet/11.jpg',
+            'assets/draw/carnet/12.jpg',
+            'assets/draw/carnet/13.jpg',
+          ],
+          srcs: [],
         },
-        project3: {
+        {
           id: 3,
-          name: 'Project 3',
-          cover: 'pint.jpg',
+          name: 'Abstractions',
+          cover: 'assets/draw/carnet_abstractions/1.JPG',
+          urls: ['assets/draw/carnet_abstractions/1.JPG'],
+          srcs: [],
         },
-        project4: {
+        {
           id: 4,
-          name: 'Project 4',
-          cover: 'pint.jpg',
+          name: 'Forest',
+          cover: 'assets/draw/forest/1.jpg',
+          urls: [
+            'assets/draw/forest/1.jpg',
+            'assets/draw/forest/2.jpg',
+            'assets/draw/forest/3.jpg',
+          ],
+          srcs: [],
         },
-        project5: {
+        {
           id: 5,
-          name: 'Project 5',
-          cover: 'pint.jpg',
+          name: 'Graphisme',
+          cover: 'assets/draw/graphisme/1.jpg',
+          urls: ['assets/draw/graphisme/1.jpg'],
+          srcs: [],
         },
-        project6: {
+        {
           id: 6,
-          name: 'Project 6',
-          cover: 'pint.jpg',
+          name: 'Picnic',
+          cover: 'assets/draw/picnic/1.jpg',
+          urls: ['assets/draw/picnic/1.jpg', 'assets/draw/picnic/2.jpg'],
+          srcs: [],
         },
-        project7: {
+        {
           id: 7,
-          name: 'Project 7',
-          cover: 'pint.jpg',
+          name: 'Poster',
+          cover: 'assets/draw/poster/1.jpg',
+          urls: ['assets/draw/poster/1.jpg'],
+          srcs: [],
         },
-        project8: {
-          id: 8,
-          name: 'Project 8',
-          cover: 'pint.jpg',
-        },
-        project9: {
-          id: 9,
-          name: 'Project 9',
-          cover: 'pint.jpg',
-        },
-        project10: {
-          id: 10,
-          name: 'Project 10',
-          cover: 'pint.jpg',
-        },
-      },
+      ],
     }
   },
+  mounted() {
+    try {
+      this.projects.map((project) => {
+        project.urls.map(async (url) => {
+          const ref = storage.ref(url)
+          project.srcs.push(await ref.getDownloadURL())
+        })
+      })
+      console.log(this.projects)
+    } catch (e) {
+      console.log(e)
+    }
+  },
+  computed: {
+    projectModal() {
+      return this.projects[this.index - 1]
+    },
+  },
+
   methods: {
     showModal(index) {
       this.modal = true
+      this.index = index
     },
   },
 }
